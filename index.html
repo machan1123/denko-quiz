@@ -1,0 +1,658 @@
+<title>電工二種 暗記帳</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1F5C8B">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="電工二種暗記帳">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#EEF2F1;
+    --bg-grid:#E1E9E8;
+    --surface:#FFFFFF;
+    --surface-2:#F4F7F6;
+    --ink:#16222B;
+    --muted:#5B6B72;
+    --muted-2:#84939A;
+    --accent:#1F5C8B;
+    --accent-strong:#164569;
+    --accent-soft:#DCE9F2;
+    --copper:#B5652E;
+    --copper-soft:#F3E2D3;
+    --good:#1F8F5B;
+    --good-soft:#DEF3E7;
+    --bad:#C0433D;
+    --bad-soft:#FBE3E1;
+    --border:#D2DBDC;
+    --shadow:0 1px 2px rgba(20,40,50,.06), 0 6px 20px -10px rgba(20,40,50,.20);
+    --radius:14px;
+    --mono:'JetBrains Mono',ui-monospace,'SFMono-Regular',Menlo,monospace;
+    --head:'Zen Kaku Gothic New','Noto Sans JP',sans-serif;
+    --body:'Noto Sans JP',-apple-system,BlinkMacSystemFont,sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#0D161F;
+      --bg-grid:#111C27;
+      --surface:#16212C;
+      --surface-2:#1B2833;
+      --ink:#E7EEF2;
+      --muted:#93A5AF;
+      --muted-2:#6C7D86;
+      --accent:#6DB0DD;
+      --accent-strong:#8FC4E7;
+      --accent-soft:#1D3547;
+      --copper:#E08A4E;
+      --copper-soft:#3A2A1C;
+      --good:#4CC088;
+      --good-soft:#123626;
+      --bad:#E37872;
+      --bad-soft:#3B1E1D;
+      --border:#26333E;
+      --shadow:0 1px 2px rgba(0,0,0,.3), 0 10px 30px -12px rgba(0,0,0,.55);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0D161F;
+    --bg-grid:#111C27;
+    --surface:#16212C;
+    --surface-2:#1B2833;
+    --ink:#E7EEF2;
+    --muted:#93A5AF;
+    --muted-2:#6C7D86;
+    --accent:#6DB0DD;
+    --accent-strong:#8FC4E7;
+    --accent-soft:#1D3547;
+    --copper:#E08A4E;
+    --copper-soft:#3A2A1C;
+    --good:#4CC088;
+    --good-soft:#123626;
+    --bad:#E37872;
+    --bad-soft:#3B1E1D;
+    --border:#26333E;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 10px 30px -12px rgba(0,0,0,.55);
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    background:
+      linear-gradient(var(--bg-grid) 1px, transparent 1px) 0 0/100% 28px,
+      linear-gradient(90deg, var(--bg-grid) 1px, transparent 1px) 0 0/28px 100%,
+      var(--bg);
+    color:var(--ink);
+    font-family:var(--body);
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.head{font-family:var(--head);}
+  .num{font-family:var(--mono);font-variant-numeric:tabular-nums;}
+
+  .app{
+    max-width:520px;
+    margin:0 auto;
+    padding:calc(20px + env(safe-area-inset-top)) calc(16px + env(safe-area-inset-right)) calc(48px + env(safe-area-inset-bottom)) calc(16px + env(safe-area-inset-left));
+    min-height:100vh;
+  }
+
+  /* ---- top bar ---- */
+  .topbar{
+    display:flex;align-items:center;justify-content:space-between;
+    gap:10px;margin-bottom:18px;
+  }
+  .brand{display:flex;align-items:baseline;gap:8px;}
+  .brand .mark{
+    font-family:var(--mono);font-weight:700;font-size:11px;letter-spacing:.14em;
+    color:var(--accent);background:var(--accent-soft);
+    padding:3px 7px;border-radius:6px;
+  }
+  .brand h1{margin:0;font-size:17px;font-weight:700;letter-spacing:.01em;}
+  .theme-note{font-size:11px;color:var(--muted-2);}
+
+  /* ---- meter chip (score readout) ---- */
+  .meter{
+    font-family:var(--mono);
+    display:flex;align-items:center;gap:6px;
+    background:var(--surface-2);border:1px solid var(--border);
+    border-radius:10px;padding:5px 10px;
+    font-size:12px;color:var(--muted);
+    white-space:nowrap;
+  }
+  .meter b{color:var(--ink);font-weight:700;}
+  .meter .pct{color:var(--accent);font-weight:700;}
+
+  /* ---- cards / sections ---- */
+  .card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+  }
+  .panel{padding:20px;}
+
+  .lede{color:var(--muted);font-size:13.5px;line-height:1.7;margin:0 0 18px;}
+  .lede b{color:var(--ink);}
+
+  .section-title{
+    display:flex;align-items:center;gap:8px;
+    font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--muted);
+    text-transform:uppercase;margin:22px 0 10px;
+  }
+  .section-title::after{content:"";flex:1;height:1px;background:var(--border);}
+
+  /* category grid */
+  .cats{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .cat{
+    text-align:left;
+    background:var(--surface);border:1px solid var(--border);border-radius:12px;
+    padding:13px 14px;cursor:pointer;
+    display:flex;flex-direction:column;gap:6px;
+    font-family:var(--body);color:var(--ink);
+    transition:border-color .15s ease, transform .1s ease;
+  }
+  .cat:active{transform:scale(.98);}
+  .cat[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset;}
+  .cat .cat-name{font-weight:700;font-size:14px;}
+  .cat .cat-count{font-family:var(--mono);font-size:11.5px;color:var(--muted);}
+  .cat .cat-best{font-family:var(--mono);font-size:11px;color:var(--copper);}
+  .cat.all{grid-column:1 / -1;background:var(--accent-soft);border-color:transparent;}
+  .cat.all .cat-name{color:var(--accent-strong);}
+
+  .start-btn{
+    margin-top:18px;width:100%;
+    background:var(--accent);color:#fff;border:none;border-radius:12px;
+    font-family:var(--head);font-weight:700;font-size:15.5px;
+    padding:15px;cursor:pointer;letter-spacing:.02em;
+    box-shadow:0 8px 20px -8px color-mix(in srgb, var(--accent) 60%, transparent);
+  }
+  .start-btn:active{transform:translateY(1px);}
+  .start-btn:disabled{opacity:.45;cursor:not-allowed;box-shadow:none;}
+
+  footer.credit{margin-top:26px;font-size:11px;color:var(--muted-2);line-height:1.7;text-align:center;}
+
+  /* ---- quiz screen ---- */
+  .progress-row{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+  .progress-track{
+    flex:1;height:6px;border-radius:99px;background:var(--surface-2);
+    border:1px solid var(--border);overflow:hidden;
+  }
+  .progress-fill{height:100%;background:var(--accent);border-radius:99px;transition:width .25s ease;}
+  .qcount{font-family:var(--mono);font-size:12px;color:var(--muted);white-space:nowrap;}
+
+  .tag-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+  .tag{
+    font-family:var(--mono);font-size:10.5px;font-weight:700;letter-spacing:.08em;
+    color:var(--accent-strong);background:var(--accent-soft);
+    padding:4px 9px;border-radius:99px;text-transform:uppercase;
+  }
+
+  .photo-wrap{
+    background:var(--surface-2);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:14px;
+    display:flex;align-items:center;justify-content:center;
+    position:relative;
+    margin-bottom:16px;
+  }
+  .photo-wrap::before,.photo-wrap::after{
+    position:absolute;width:10px;height:10px;border:2px solid var(--muted-2);opacity:.5;content:"";
+  }
+  .photo-wrap::before{top:6px;left:6px;border-right:none;border-bottom:none;}
+  .photo-wrap::after{bottom:6px;right:6px;border-left:none;border-top:none;}
+  .photo-wrap img{max-width:100%;max-height:280px;border-radius:4px;display:block;}
+
+  .prompt{font-size:14.5px;color:var(--muted);margin:0 0 14px;font-weight:500;}
+  .prompt b{color:var(--ink);}
+
+  .choices{display:flex;flex-direction:column;gap:9px;}
+  .choice{
+    display:flex;align-items:center;gap:11px;
+    text-align:left;width:100%;
+    background:var(--surface);border:1.5px solid var(--border);border-radius:11px;
+    padding:12px 13px;cursor:pointer;font-family:var(--body);color:var(--ink);
+    font-size:14px;line-height:1.5;
+    transition:border-color .12s ease, background .12s ease;
+  }
+  .choice:active{transform:scale(.99);}
+  .choice .idx{
+    font-family:var(--mono);font-weight:700;font-size:12px;
+    width:22px;height:22px;flex:none;border-radius:6px;
+    display:flex;align-items:center;justify-content:center;
+    background:var(--surface-2);color:var(--muted);border:1px solid var(--border);
+  }
+  .choice:disabled{cursor:default;}
+  .choice.correct{border-color:var(--good);background:var(--good-soft);}
+  .choice.correct .idx{background:var(--good);color:#fff;border-color:var(--good);}
+  .choice.wrong{border-color:var(--bad);background:var(--bad-soft);}
+  .choice.wrong .idx{background:var(--bad);color:#fff;border-color:var(--bad);}
+  .choice.dim{opacity:.45;}
+
+  .result-banner{
+    display:flex;align-items:center;gap:10px;
+    margin:16px 0 4px;padding:11px 13px;border-radius:10px;
+    font-family:var(--head);font-weight:700;font-size:14.5px;
+  }
+  .result-banner.good{background:var(--good-soft);color:var(--good);}
+  .result-banner.bad{background:var(--bad-soft);color:var(--bad);}
+
+  .explain{
+    margin-top:12px;padding:14px 15px;border-radius:10px;
+    background:var(--surface-2);border:1px solid var(--border);
+    font-size:13.5px;line-height:1.85;color:var(--ink);
+    white-space:pre-line;
+  }
+  .explain .explain-label{
+    font-family:var(--mono);font-size:10.5px;font-weight:700;letter-spacing:.08em;
+    color:var(--copper);text-transform:uppercase;display:block;margin-bottom:6px;
+  }
+
+  .next-btn{
+    margin-top:16px;width:100%;background:var(--accent);color:#fff;border:none;
+    border-radius:12px;font-family:var(--head);font-weight:700;font-size:15px;
+    padding:14px;cursor:pointer;
+  }
+  .quit-link{
+    display:block;text-align:center;margin-top:14px;font-size:12.5px;
+    color:var(--muted-2);text-decoration:underline;background:none;border:none;
+    cursor:pointer;font-family:var(--body);width:100%;padding:6px;
+  }
+
+  /* ---- result screen ---- */
+  .score-hero{text-align:center;padding:30px 18px 22px;}
+  .score-big{
+    font-family:var(--mono);font-weight:700;font-size:52px;line-height:1;
+    color:var(--accent);
+  }
+  .score-big span{font-size:22px;color:var(--muted);}
+  .score-sub{color:var(--muted);font-size:13px;margin-top:8px;}
+  .score-bars{display:flex;flex-direction:column;gap:10px;margin-top:22px;}
+  .score-bar-row{display:flex;align-items:center;gap:10px;font-size:12.5px;}
+  .score-bar-row .lbl{width:60px;flex:none;font-family:var(--mono);color:var(--muted);text-align:right;}
+  .score-bar-track{flex:1;height:9px;border-radius:99px;background:var(--surface-2);border:1px solid var(--border);overflow:hidden;}
+  .score-bar-fill{height:100%;border-radius:99px;background:var(--good);}
+  .score-bar-fill.mid{background:var(--copper);}
+  .score-bar-fill.low{background:var(--bad);}
+
+  .result-actions{display:flex;flex-direction:column;gap:10px;margin-top:22px;}
+  .btn-secondary{
+    background:var(--surface-2);color:var(--ink);border:1px solid var(--border);
+    border-radius:12px;font-family:var(--head);font-weight:700;font-size:14.5px;
+    padding:13px;cursor:pointer;
+  }
+
+  [hidden]{display:none !important;}
+
+  @media (prefers-reduced-motion: reduce){
+    *{transition:none !important;}
+  }
+
+  @media (max-width:380px){
+    .score-big{font-size:44px;}
+    .cats{grid-template-columns:1fr;}
+    .cat.all{grid-column:auto;}
+  }
+</style>
+
+<div class="app">
+
+  <div class="topbar">
+    <div class="brand">
+      <span class="mark">2種</span>
+      <h1>写真・図記号 暗記帳</h1>
+    </div>
+  </div>
+
+  <!-- ============ HOME ============ -->
+  <section id="screen-home">
+    <div class="card panel">
+      <p class="lede">
+        『第2種電気工事士すい～っと合格 写真・図記号の暗記カード』の内容をもとにした、
+        <b>4択クイズ集</b>です。写真や図記号を見て名称を答え、答えたあとに初心者向けの解説を読んで覚えていきます。
+        スコアは端末に保存され、<b>正答率</b>がいつでも確認できます。
+      </p>
+    </div>
+
+    <div class="section-title">カテゴリを選ぶ</div>
+    <div class="cats" id="cats"></div>
+
+    <button class="start-btn" id="startBtn" disabled>クイズを始める</button>
+
+    <footer class="credit">
+      出題内容：オーム社「第２種電気工事士学科試験すい～っと合格」掲載の写真・図記号資料より作成。<br>
+      学習の補助教材としてご利用ください。記録はこの端末のブラウザにのみ保存されます。
+    </footer>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section id="screen-quiz" hidden>
+    <div class="progress-row">
+      <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+      <div class="qcount num" id="qcount">0/0</div>
+    </div>
+    <div class="meter" style="margin-bottom:14px;justify-content:space-between;">
+      <span>正解 <b class="num" id="liveCorrect">0</b> / <span class="num" id="liveTotal">0</span></span>
+      <span class="pct num" id="livePct">正答率 —</span>
+    </div>
+
+    <div class="card panel">
+      <div class="tag-row">
+        <span class="tag" id="qSectionTag">—</span>
+      </div>
+
+      <div class="photo-wrap"><img id="qImg" src="" alt="出題画像"></div>
+
+      <p class="prompt" id="qPrompt">これは何ですか？名称を選んでください。</p>
+
+      <div class="choices" id="choices"></div>
+
+      <div id="resultBanner"></div>
+      <div id="explainBox"></div>
+      <button class="next-btn" id="nextBtn" hidden>次の問題 →</button>
+    </div>
+
+    <button class="quit-link" id="quitBtn">カテゴリ選択に戻る</button>
+  </section>
+
+  <!-- ============ RESULT ============ -->
+  <section id="screen-result" hidden>
+    <div class="card">
+      <div class="score-hero">
+        <div class="theme-note" id="resultSectionName">全カテゴリ</div>
+        <div class="score-big num" id="resultPct">0<span>%</span></div>
+        <div class="score-sub num" id="resultDetail">0/0問 正解</div>
+
+        <div class="score-bars" id="scoreBars"></div>
+      </div>
+    </div>
+
+    <div class="result-actions">
+      <button class="start-btn" id="retryWrongBtn">間違えた問題だけ復習する</button>
+      <button class="btn-secondary" id="retryAllBtn">同じ範囲をもう一度</button>
+      <button class="btn-secondary" id="backHomeBtn">カテゴリ選択に戻る</button>
+    </div>
+  </section>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var STATS_KEY = 'denko-quiz-stats-v3';
+  var SECTIONS = [
+    {key:'写真鑑別【器具・材料】', label:'写真鑑別', sub:'器具・材料', icon:'📷'},
+    {key:'写真鑑別【工具】', label:'写真鑑別', sub:'工具', icon:'🔧'},
+    {key:'写真鑑別【測定器】', label:'写真鑑別', sub:'測定器', icon:'📟'},
+    {key:'図記号【器具・材料】', label:'図記号', sub:'器具・材料', icon:'⏚'},
+    {key:'図記号【測定器】', label:'図記号', sub:'測定器', icon:'◎'}
+  ];
+
+  var ALL_DATA = [];
+  var byId = {};
+  var selectedKey = 'ALL';
+  var queue = [];
+  var qIndex = 0;
+  var score = {correct:0, total:0};
+  var wrongIds = [];
+  var currentSectionLabelForResult = '全カテゴリ';
+  var reviewMode = false;
+  var lastRunPool = [];
+
+  function $(id){ return document.getElementById(id); }
+
+  function loadStats(){
+    try{
+      var raw = localStorage.getItem(STATS_KEY);
+      return raw ? JSON.parse(raw) : {};
+    }catch(e){ return {}; }
+  }
+  function saveStats(stats){
+    try{ localStorage.setItem(STATS_KEY, JSON.stringify(stats)); }catch(e){}
+  }
+  function recordResult(key, correct, total){
+    var stats = loadStats();
+    var s = stats[key] || {attempts:0, correct:0, total:0, best:0};
+    s.attempts += 1;
+    s.correct += correct;
+    s.total += total;
+    var pct = total ? Math.round(correct/total*100) : 0;
+    if(pct > s.best) s.best = pct;
+    stats[key] = s;
+    saveStats(stats);
+  }
+
+  function shuffle(arr){
+    var a = arr.slice();
+    for(var i=a.length-1;i>0;i--){
+      var j = Math.floor(Math.random()*(i+1));
+      var t=a[i]; a[i]=a[j]; a[j]=t;
+    }
+    return a;
+  }
+
+  function buildHome(){
+    var stats = loadStats();
+    var wrap = $('cats');
+    wrap.innerHTML = '';
+
+    var allBtn = document.createElement('button');
+    allBtn.className = 'cat all';
+    allBtn.setAttribute('aria-pressed', selectedKey==='ALL' ? 'true':'false');
+    var allStats = stats['ALL'];
+    allBtn.innerHTML =
+      '<span class="cat-name">🗂️ 全カテゴリ</span>' +
+      '<span class="cat-count num">全'+ALL_DATA.length+'問</span>' +
+      (allStats ? '<span class="cat-best num">これまでの最高 '+allStats.best+'%</span>' : '<span class="cat-best num">&nbsp;</span>');
+    allBtn.onclick = function(){ selectedKey='ALL'; buildHome(); };
+    wrap.appendChild(allBtn);
+
+    SECTIONS.forEach(function(s){
+      var n = ALL_DATA.filter(function(d){return d.section===s.key;}).length;
+      var st = stats[s.key];
+      var btn = document.createElement('button');
+      btn.className = 'cat';
+      btn.setAttribute('aria-pressed', selectedKey===s.key ? 'true':'false');
+      btn.innerHTML =
+        '<span class="cat-name">'+s.icon+' '+s.label+'<br>'+s.sub+'</span>' +
+        '<span class="cat-count num">全'+n+'問</span>' +
+        (st ? '<span class="cat-best num">これまでの最高 '+st.best+'%</span>' : '<span class="cat-best num">&nbsp;</span>');
+      btn.onclick = function(){ selectedKey = s.key; buildHome(); };
+      wrap.appendChild(btn);
+    });
+
+    $('startBtn').disabled = ALL_DATA.length===0;
+  }
+
+  function sectionLabel(key){
+    if(key==='ALL') return '全カテゴリ';
+    var s = SECTIONS.filter(function(x){return x.key===key;})[0];
+    return s ? (s.label+'（'+s.sub+'）') : key;
+  }
+
+  function startQuiz(pool, label, isReview){
+    queue = shuffle(pool);
+    qIndex = 0;
+    score = {correct:0, total:0};
+    wrongIds = [];
+    currentSectionLabelForResult = label;
+    reviewMode = !!isReview;
+    lastRunPool = pool;
+    $('screen-home').hidden = true;
+    $('screen-result').hidden = true;
+    $('screen-quiz').hidden = false;
+    renderQuestion();
+  }
+
+  function currentPoolForSelection(){
+    if(selectedKey==='ALL') return ALL_DATA;
+    return ALL_DATA.filter(function(d){return d.section===selectedKey;});
+  }
+
+  function updateLiveMeter(){
+    $('liveCorrect').textContent = score.correct;
+    $('liveTotal').textContent = score.total;
+    $('livePct').textContent = score.total ? ('正答率 '+Math.round(score.correct/score.total*100)+'%') : '正答率 —';
+    var pctDone = queue.length ? Math.round((score.total)/queue.length*100) : 0;
+    $('progressFill').style.width = pctDone+'%';
+    $('qcount').textContent = score.total+'/'+queue.length;
+  }
+
+  function renderQuestion(){
+    if(qIndex >= queue.length){
+      showResult();
+      return;
+    }
+    var q = queue[qIndex];
+    updateLiveMeter();
+
+    var sec = SECTIONS.filter(function(s){return s.key===q.section;})[0];
+    $('qSectionTag').textContent = sec ? (sec.label+' / '+sec.sub) : q.sectionLabel;
+    $('qImg').src = 'data:image/jpeg;base64,' + q.img;
+    $('qPrompt').innerHTML = q.section.indexOf('図記号')===0
+      ? 'この<b>図記号</b>の名称として正しいものはどれですか？'
+      : 'この<b>写真</b>の名称として正しいものはどれですか？';
+
+    var cbox = $('choices');
+    cbox.innerHTML = '';
+    var letters = ['A','B','C','D'];
+    q.choices.forEach(function(choiceText, idx){
+      var b = document.createElement('button');
+      b.className = 'choice';
+      b.innerHTML = '<span class="idx">'+letters[idx]+'</span><span>'+choiceText+'</span>';
+      b.onclick = function(){ answer(idx); };
+      cbox.appendChild(b);
+    });
+
+    $('resultBanner').innerHTML = '';
+    $('explainBox').innerHTML = '';
+    $('nextBtn').hidden = true;
+  }
+
+  function answer(idx){
+    var q = queue[qIndex];
+    var buttons = $('choices').querySelectorAll('.choice');
+    buttons.forEach(function(b){ b.disabled = true; });
+
+    var isCorrect = idx === q.answer;
+    buttons[q.answer].classList.add('correct');
+    if(!isCorrect){
+      buttons[idx].classList.add('wrong');
+    }
+    buttons.forEach(function(b,i){
+      if(i!==idx && i!==q.answer) b.classList.add('dim');
+    });
+
+    score.total += 1;
+    if(isCorrect) score.correct += 1;
+    else wrongIds.push(q.id);
+
+    $('resultBanner').innerHTML =
+      '<div class="result-banner '+(isCorrect?'good':'bad')+'">'+
+      (isCorrect ? '⭕ 正解です！' : '❌ 不正解　正解は「'+q.choices[q.answer]+'」') +
+      '</div>';
+
+    $('explainBox').innerHTML =
+      '<div class="explain"><span class="explain-label">かんたん解説</span>' +
+      escapeHtml(q.explanation) + '</div>';
+
+    $('nextBtn').hidden = false;
+    updateLiveMeter();
+  }
+
+  function escapeHtml(s){
+    var d = document.createElement('div');
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  $('nextBtn').onclick = function(){
+    qIndex += 1;
+    renderQuestion();
+  };
+
+  $('quitBtn').onclick = function(){
+    $('screen-quiz').hidden = true;
+    $('screen-home').hidden = false;
+    buildHome();
+  };
+
+  function showResult(){
+    $('screen-quiz').hidden = true;
+    $('screen-result').hidden = false;
+
+    var pct = score.total ? Math.round(score.correct/score.total*100) : 0;
+    $('resultSectionName').textContent = (reviewMode ? '復習：' : '') + currentSectionLabelForResult;
+    $('resultPct').innerHTML = pct + '<span>%</span>';
+    $('resultDetail').textContent = score.total+'問中 '+score.correct+'問 正解';
+
+    // per-section breakdown of this run
+    var bySec = {};
+    queue.forEach(function(q, i){
+      bySec[q.section] = bySec[q.section] || {correct:0, total:0};
+    });
+    // recompute using stored order and known wrong ids
+    var wrongSet = {};
+    wrongIds.forEach(function(id){ wrongSet[id]=true; });
+    queue.forEach(function(q){
+      var b = bySec[q.section];
+      b.total += 1;
+      if(!wrongSet[q.id]) b.correct += 1;
+    });
+
+    var barsHtml = '';
+    Object.keys(bySec).forEach(function(key){
+      var b = bySec[key];
+      var p = b.total ? Math.round(b.correct/b.total*100) : 0;
+      var cls = p>=80 ? '' : (p>=50 ? 'mid' : 'low');
+      var sec = SECTIONS.filter(function(s){return s.key===key;})[0];
+      var lbl = sec ? sec.sub : key;
+      barsHtml += '<div class="score-bar-row"><span class="lbl">'+lbl+'</span>' +
+        '<div class="score-bar-track"><div class="score-bar-fill '+cls+'" style="width:'+p+'%"></div></div>' +
+        '<span class="num" style="width:34px;text-align:right;">'+p+'%</span></div>';
+    });
+    $('scoreBars').innerHTML = barsHtml;
+
+    if(!reviewMode){
+      recordResult(selectedKey, score.correct, score.total);
+    }
+
+    $('retryWrongBtn').hidden = wrongIds.length===0;
+    $('retryWrongBtn').textContent = '間違えた'+wrongIds.length+'問だけ復習する';
+  };
+
+  $('retryWrongBtn').onclick = function(){
+    var wrongSet = {};
+    wrongIds.forEach(function(id){ wrongSet[id]=true; });
+    var pool = lastRunPool.filter(function(q){ return wrongSet[q.id]; });
+    startQuiz(pool, currentSectionLabelForResult, true);
+  };
+  $('retryAllBtn').onclick = function(){
+    startQuiz(lastRunPool, currentSectionLabelForResult, reviewMode);
+  };
+  $('backHomeBtn').onclick = function(){
+    $('screen-result').hidden = true;
+    $('screen-home').hidden = false;
+    buildHome();
+  };
+
+  $('startBtn').onclick = function(){
+    var pool = currentPoolForSelection();
+    startQuiz(pool, sectionLabel(selectedKey), false);
+  };
+
+  fetch('data.json').then(function(r){ return r.json(); }).then(function(data){
+    ALL_DATA = data;
+    byId = {};
+    data.forEach(function(d){ byId[d.id]=d; });
+    buildHome();
+  }).catch(function(err){
+    $('cats').innerHTML = '<p style="color:var(--bad);font-size:13px;">データの読み込みに失敗しました。ページを再読み込みしてください。</p>';
+  });
+
+})();
+</script>

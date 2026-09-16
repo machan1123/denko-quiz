@@ -1,0 +1,16 @@
+{
+  "name": "電工二種 写真・図記号 暗記帳",
+  "short_name": "電工二種暗記帳",
+  "description": "第2種電気工事士の写真鑑別・図記号を4択クイズと解説で復習できる暗記アプリ",
+  "start_url": "index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#EEF2F1",
+  "theme_color": "#1F5C8B",
+  "lang": "ja",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}
