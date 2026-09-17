@@ -149,6 +149,21 @@
     flex:none;background:var(--accent);color:#fff;border:none;border-radius:10px;
     padding:0 18px;font-family:var(--head);font-weight:700;font-size:14px;cursor:pointer;
   }
+  .field-error{color:var(--bad);font-size:12px;margin-top:8px;line-height:1.6;}
+
+  .profile-row.confirming{
+    background:var(--bad-soft);border:1px solid var(--bad);border-radius:12px;
+    padding:10px 12px;display:flex;align-items:center;gap:8px;
+  }
+  .profile-row.confirming .confirm-msg{flex:1;font-size:13px;color:var(--ink);font-weight:700;}
+  .profile-row.confirming .confirm-yes{
+    flex:none;background:var(--bad);color:#fff;border:none;border-radius:8px;
+    padding:8px 12px;font-family:var(--head);font-weight:700;font-size:12.5px;cursor:pointer;
+  }
+  .profile-row.confirming .confirm-no{
+    flex:none;background:var(--surface);color:var(--muted);border:1px solid var(--border);
+    border-radius:8px;padding:8px 12px;font-family:var(--body);font-size:12.5px;cursor:pointer;
+  }
 
   /* ---- meter chip (score readout) ---- */
   .meter{
@@ -360,6 +375,7 @@
       <input type="text" id="newProfileName" placeholder="名前を入力（例：たろう）" maxlength="12">
       <button id="addProfileBtn">追加</button>
     </div>
+    <div class="field-error" id="profileNameError" hidden></div>
 
     <footer class="credit">
       記録は名前ごとに、この端末のブラウザに保存されます。他の端末とは共有されません。
@@ -534,25 +550,59 @@
       var row = document.createElement('div');
       row.className = 'profile-row';
 
-      var btn = document.createElement('button');
-      btn.className = 'profile-item';
-      btn.innerHTML = '<span class="avatar">' + escapeHtml(name.slice(0,1).toUpperCase()) + '</span>' +
-        '<span class="pname">' + escapeHtml(name) + '</span>';
-      btn.onclick = function(){ chooseProfile(name); };
+      function renderNormal(){
+        row.className = 'profile-row';
+        row.innerHTML = '';
 
-      var del = document.createElement('button');
-      del.className = 'profile-del';
-      del.setAttribute('aria-label', name + 'を削除');
-      del.textContent = '×';
-      del.onclick = function(e){
-        e.stopPropagation();
-        if(window.confirm('「' + name + '」の記録を削除しますか？この操作は取り消せません。')){
+        var btn = document.createElement('button');
+        btn.className = 'profile-item';
+        btn.innerHTML = '<span class="avatar">' + escapeHtml(name.slice(0,1).toUpperCase()) + '</span>' +
+          '<span class="pname">' + escapeHtml(name) + '</span>';
+        btn.onclick = function(){ chooseProfile(name); };
+
+        var del = document.createElement('button');
+        del.className = 'profile-del';
+        del.setAttribute('aria-label', name + 'を削除');
+        del.textContent = '×';
+        del.onclick = function(e){
+          e.stopPropagation();
+          renderConfirm();
+        };
+
+        row.appendChild(btn);
+        row.appendChild(del);
+      }
+
+      function renderConfirm(){
+        row.className = 'profile-row confirming';
+        row.innerHTML = '';
+
+        var msg = document.createElement('span');
+        msg.className = 'confirm-msg';
+        msg.textContent = '「' + name + '」を削除する？';
+
+        var yes = document.createElement('button');
+        yes.className = 'confirm-yes';
+        yes.textContent = '削除する';
+        yes.onclick = function(e){
+          e.stopPropagation();
           deleteProfile(name);
-        }
-      };
+        };
 
-      row.appendChild(btn);
-      row.appendChild(del);
+        var no = document.createElement('button');
+        no.className = 'confirm-no';
+        no.textContent = 'やめる';
+        no.onclick = function(e){
+          e.stopPropagation();
+          renderNormal();
+        };
+
+        row.appendChild(msg);
+        row.appendChild(yes);
+        row.appendChild(no);
+      }
+
+      renderNormal();
       wrap.appendChild(row);
     });
   }
@@ -590,11 +640,14 @@
 
   $('addProfileBtn').onclick = function(){
     var input = $('newProfileName');
+    var err = $('profileNameError');
+    err.hidden = true;
     var name = input.value.trim();
     if(!name) return;
     var list = getProfiles();
     if(list.indexOf(name) !== -1){
-      window.alert('その名前はすでに使われています。別の名前を入力してください。');
+      err.textContent = 'その名前はすでに使われています。別の名前を入力してください。';
+      err.hidden = false;
       return;
     }
     list.push(name);
@@ -604,6 +657,9 @@
   };
   $('newProfileName').addEventListener('keydown', function(e){
     if(e.key === 'Enter'){ $('addProfileBtn').click(); }
+  });
+  $('newProfileName').addEventListener('input', function(){
+    $('profileNameError').hidden = true;
   });
   $('profileChip').onclick = goToProfileScreen;
 
