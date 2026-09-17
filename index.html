@@ -113,6 +113,43 @@
   .brand h1{margin:0;font-size:17px;font-weight:700;letter-spacing:.01em;}
   .theme-note{font-size:11px;color:var(--muted-2);}
 
+  .profile-chip{
+    font-family:var(--mono);font-size:11.5px;color:var(--muted);
+    background:var(--surface-2);border:1px solid var(--border);border-radius:99px;
+    padding:6px 10px;cursor:pointer;white-space:nowrap;flex:none;
+  }
+  .profile-chip:active{transform:scale(.97);}
+
+  /* ---- profile screen ---- */
+  .profile-list{display:flex;flex-direction:column;gap:10px;margin:16px 0;}
+  .profile-row{display:flex;gap:8px;align-items:center;}
+  .profile-item{
+    flex:1;display:flex;align-items:center;gap:12px;text-align:left;
+    background:var(--surface);border:1px solid var(--border);border-radius:12px;
+    padding:12px 14px;cursor:pointer;color:var(--ink);font-family:var(--body);
+  }
+  .profile-item:active{transform:scale(.98);}
+  .profile-item .avatar{
+    width:34px;height:34px;border-radius:50%;background:var(--accent-soft);color:var(--accent-strong);
+    display:flex;align-items:center;justify-content:center;font-family:var(--head);font-weight:700;
+    font-size:15px;flex:none;
+  }
+  .profile-item .pname{font-weight:700;font-size:14.5px;}
+  .profile-del{
+    flex:none;width:34px;height:34px;border-radius:10px;border:1px solid var(--border);
+    background:var(--surface-2);color:var(--muted);font-size:16px;line-height:1;cursor:pointer;
+  }
+  .add-profile-row{display:flex;gap:8px;margin-top:14px;}
+  .add-profile-row input{
+    flex:1;min-width:0;border:1.5px solid var(--border);border-radius:10px;padding:11px 12px;
+    font-family:var(--body);font-size:14px;background:var(--surface);color:var(--ink);
+  }
+  .add-profile-row input:focus{outline:none;border-color:var(--accent);}
+  .add-profile-row button{
+    flex:none;background:var(--accent);color:#fff;border:none;border-radius:10px;
+    padding:0 18px;font-family:var(--head);font-weight:700;font-size:14px;cursor:pointer;
+  }
+
   /* ---- meter chip (score readout) ---- */
   .meter{
     font-family:var(--mono);
@@ -305,10 +342,32 @@
       <span class="mark">2種</span>
       <h1>写真・図記号 暗記帳</h1>
     </div>
+    <button class="profile-chip" id="profileChip" hidden></button>
   </div>
 
+  <!-- ============ PROFILE ============ -->
+  <section id="screen-profile" hidden>
+    <div class="card panel">
+      <p class="lede" style="margin-bottom:6px;">
+        <b>だれが挑戦しますか？</b><br>
+        名前ごとに正解数・正答率を分けて記録します。家族や友達と一緒に使うときは、それぞれの名前を追加してください。
+      </p>
+    </div>
+
+    <div class="profile-list" id="profileList"></div>
+
+    <div class="add-profile-row">
+      <input type="text" id="newProfileName" placeholder="名前を入力（例：たろう）" maxlength="12">
+      <button id="addProfileBtn">追加</button>
+    </div>
+
+    <footer class="credit">
+      記録は名前ごとに、この端末のブラウザに保存されます。他の端末とは共有されません。
+    </footer>
+  </section>
+
   <!-- ============ HOME ============ -->
-  <section id="screen-home">
+  <section id="screen-home" hidden>
     <div class="card panel">
       <p class="lede">
         『第2種電気工事士すい～っと合格 写真・図記号の暗記カード』の内容をもとにした、
@@ -324,7 +383,7 @@
 
     <footer class="credit">
       出題内容：オーム社「第２種電気工事士学科試験すい～っと合格」掲載の写真・図記号資料より作成。<br>
-      学習の補助教材としてご利用ください。記録はこの端末のブラウザにのみ保存されます。
+      学習の補助教材としてご利用ください。記録は名前ごとに、この端末のブラウザにのみ保存されます。
     </footer>
   </section>
 
@@ -383,7 +442,9 @@
 (function(){
   "use strict";
 
-  var STATS_KEY = 'denko-quiz-stats-v3';
+  var PROFILES_KEY = 'denko-quiz-profiles-v1';
+  var ACTIVE_PROFILE_KEY = 'denko-quiz-active-profile-v1';
+  var activeProfile = null;
   var SECTIONS = [
     {key:'写真鑑別【器具・材料】', label:'写真鑑別', sub:'器具・材料', icon:'📷'},
     {key:'写真鑑別【工具】', label:'写真鑑別', sub:'工具', icon:'🔧'},
@@ -405,14 +466,19 @@
 
   function $(id){ return document.getElementById(id); }
 
+  function statsKeyFor(profile){
+    return 'denko-quiz-stats-v3::' + profile;
+  }
   function loadStats(){
+    if(!activeProfile) return {};
     try{
-      var raw = localStorage.getItem(STATS_KEY);
+      var raw = localStorage.getItem(statsKeyFor(activeProfile));
       return raw ? JSON.parse(raw) : {};
     }catch(e){ return {}; }
   }
   function saveStats(stats){
-    try{ localStorage.setItem(STATS_KEY, JSON.stringify(stats)); }catch(e){}
+    if(!activeProfile) return;
+    try{ localStorage.setItem(statsKeyFor(activeProfile), JSON.stringify(stats)); }catch(e){}
   }
   function recordResult(key, correct, total){
     var stats = loadStats();
@@ -425,6 +491,121 @@
     stats[key] = s;
     saveStats(stats);
   }
+
+  // ---- profiles ----
+  function getProfiles(){
+    try{
+      var raw = localStorage.getItem(PROFILES_KEY);
+      return raw ? JSON.parse(raw) : [];
+    }catch(e){ return []; }
+  }
+  function saveProfiles(list){
+    try{ localStorage.setItem(PROFILES_KEY, JSON.stringify(list)); }catch(e){}
+  }
+  function getStoredActiveProfile(){
+    try{ return localStorage.getItem(ACTIVE_PROFILE_KEY); }catch(e){ return null; }
+  }
+  function setStoredActiveProfile(name){
+    try{ localStorage.setItem(ACTIVE_PROFILE_KEY, name); }catch(e){}
+  }
+
+  function updateProfileChip(){
+    var chip = $('profileChip');
+    if(activeProfile){
+      chip.hidden = false;
+      chip.textContent = '👤 ' + activeProfile + '  切替';
+    }else{
+      chip.hidden = true;
+    }
+  }
+
+  function buildProfileScreen(){
+    var list = getProfiles();
+    var wrap = $('profileList');
+    wrap.innerHTML = '';
+    if(list.length === 0){
+      var empty = document.createElement('p');
+      empty.className = 'lede';
+      empty.style.margin = '0';
+      empty.textContent = 'まだ名前が登録されていません。下から追加してください。';
+      wrap.appendChild(empty);
+    }
+    list.forEach(function(name){
+      var row = document.createElement('div');
+      row.className = 'profile-row';
+
+      var btn = document.createElement('button');
+      btn.className = 'profile-item';
+      btn.innerHTML = '<span class="avatar">' + escapeHtml(name.slice(0,1).toUpperCase()) + '</span>' +
+        '<span class="pname">' + escapeHtml(name) + '</span>';
+      btn.onclick = function(){ chooseProfile(name); };
+
+      var del = document.createElement('button');
+      del.className = 'profile-del';
+      del.setAttribute('aria-label', name + 'を削除');
+      del.textContent = '×';
+      del.onclick = function(e){
+        e.stopPropagation();
+        if(window.confirm('「' + name + '」の記録を削除しますか？この操作は取り消せません。')){
+          deleteProfile(name);
+        }
+      };
+
+      row.appendChild(btn);
+      row.appendChild(del);
+      wrap.appendChild(row);
+    });
+  }
+
+  function chooseProfile(name){
+    activeProfile = name;
+    setStoredActiveProfile(name);
+    updateProfileChip();
+    $('screen-profile').hidden = true;
+    $('screen-quiz').hidden = true;
+    $('screen-result').hidden = true;
+    $('screen-home').hidden = false;
+    buildHome();
+  }
+
+  function deleteProfile(name){
+    var list = getProfiles().filter(function(n){ return n !== name; });
+    saveProfiles(list);
+    try{ localStorage.removeItem(statsKeyFor(name)); }catch(e){}
+    if(activeProfile === name){
+      activeProfile = null;
+      try{ localStorage.removeItem(ACTIVE_PROFILE_KEY); }catch(e){}
+      updateProfileChip();
+    }
+    buildProfileScreen();
+  }
+
+  function goToProfileScreen(){
+    $('screen-home').hidden = true;
+    $('screen-quiz').hidden = true;
+    $('screen-result').hidden = true;
+    buildProfileScreen();
+    $('screen-profile').hidden = false;
+  }
+
+  $('addProfileBtn').onclick = function(){
+    var input = $('newProfileName');
+    var name = input.value.trim();
+    if(!name) return;
+    var list = getProfiles();
+    if(list.indexOf(name) !== -1){
+      window.alert('その名前はすでに使われています。別の名前を入力してください。');
+      return;
+    }
+    list.push(name);
+    saveProfiles(list);
+    input.value = '';
+    chooseProfile(name);
+  };
+  $('newProfileName').addEventListener('keydown', function(e){
+    if(e.key === 'Enter'){ $('addProfileBtn').click(); }
+  });
+  $('profileChip').onclick = goToProfileScreen;
 
   function shuffle(arr){
     var a = arr.slice();
@@ -644,6 +825,20 @@
     var pool = currentPoolForSelection();
     startQuiz(pool, sectionLabel(selectedKey), false);
   };
+
+  // ---- boot ----
+  var storedProfile = getStoredActiveProfile();
+  var knownProfiles = getProfiles();
+  if(storedProfile && knownProfiles.indexOf(storedProfile) !== -1){
+    activeProfile = storedProfile;
+    updateProfileChip();
+    $('screen-profile').hidden = true;
+    $('screen-home').hidden = false;
+  }else{
+    buildProfileScreen();
+    $('screen-profile').hidden = false;
+    $('screen-home').hidden = true;
+  }
 
   fetch('data.json').then(function(r){ return r.json(); }).then(function(data){
     ALL_DATA = data;
