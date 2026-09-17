@@ -430,7 +430,9 @@
       <button class="next-btn" id="nextBtn" hidden>次の問題 →</button>
     </div>
 
-    <button class="quit-link" id="quitBtn">カテゴリ選択に戻る</button>
+    <button class="btn-secondary" id="finishBtn" style="width:100%;margin-top:14px;">終了して結果を見る</button>
+    <div class="field-error" id="finishError" hidden style="text-align:center;"></div>
+    <button class="quit-link" id="quitBtn">カテゴリ選択に戻る（記録しない）</button>
   </section>
 
   <!-- ============ RESULT ============ -->
@@ -768,6 +770,7 @@
     $('resultBanner').innerHTML = '';
     $('explainBox').innerHTML = '';
     $('nextBtn').hidden = true;
+    $('finishError').hidden = true;
   }
 
   function answer(idx){
@@ -818,6 +821,16 @@
     buildHome();
   };
 
+  $('finishBtn').onclick = function(){
+    if(score.total === 0){
+      var err = $('finishError');
+      err.textContent = 'まだ1問も回答していません。';
+      err.hidden = false;
+      return;
+    }
+    showResult();
+  };
+
   function showResult(){
     $('screen-quiz').hidden = true;
     $('screen-result').hidden = false;
@@ -827,15 +840,16 @@
     $('resultPct').innerHTML = pct + '<span>%</span>';
     $('resultDetail').textContent = score.total+'問中 '+score.correct+'問 正解';
 
-    // per-section breakdown of this run
+    // per-section breakdown of the answered questions only (a run ended
+    // early via "終了して結果を見る" may not have reached the end of queue)
+    var answered = queue.slice(0, score.total);
     var bySec = {};
-    queue.forEach(function(q, i){
+    answered.forEach(function(q){
       bySec[q.section] = bySec[q.section] || {correct:0, total:0};
     });
-    // recompute using stored order and known wrong ids
     var wrongSet = {};
     wrongIds.forEach(function(id){ wrongSet[id]=true; });
-    queue.forEach(function(q){
+    answered.forEach(function(q){
       var b = bySec[q.section];
       b.total += 1;
       if(!wrongSet[q.id]) b.correct += 1;
