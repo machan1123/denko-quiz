@@ -1,0 +1,73 @@
+<title>電工二種 暗記帳 QR</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@700;900&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#EEF2F1; --bg-grid:#E1E9E8; --surface:#FFFFFF;
+    --ink:#16222B; --muted:#5B6B72; --accent:#1F5C8B; --accent-soft:#DCE9F2;
+    --border:#D2DBDC;
+    --shadow:0 1px 2px rgba(20,40,50,.06), 0 10px 30px -12px rgba(20,40,50,.22);
+    --mono:'JetBrains Mono',ui-monospace,monospace;
+    --head:'Zen Kaku Gothic New','Noto Sans JP',sans-serif;
+    --body:'Noto Sans JP',-apple-system,sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#0D161F; --bg-grid:#111C27; --surface:#16212C;
+      --ink:#E7EEF2; --muted:#93A5AF; --accent:#6DB0DD; --accent-soft:#1D3547;
+      --border:#26333E; --shadow:0 1px 2px rgba(0,0,0,.3), 0 12px 34px -14px rgba(0,0,0,.6);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0D161F; --bg-grid:#111C27; --surface:#16212C;
+    --ink:#E7EEF2; --muted:#93A5AF; --accent:#6DB0DD; --accent-soft:#1D3547;
+    --border:#26333E; --shadow:0 1px 2px rgba(0,0,0,.3), 0 12px 34px -14px rgba(0,0,0,.6);
+  }
+  *{box-sizing:border-box;}
+  body{
+    background:
+      linear-gradient(var(--bg-grid) 1px, transparent 1px) 0 0/100% 28px,
+      linear-gradient(90deg, var(--bg-grid) 1px, transparent 1px) 0 0/28px 100%,
+      var(--bg);
+    color:var(--ink);
+    font-family:var(--body);
+    min-height:100vh;
+    display:flex; align-items:center; justify-content:center;
+    padding:32px 16px;
+  }
+  .wrap{max-width:360px; width:100%; text-align:center;}
+  .mark{
+    display:inline-block; font-family:var(--mono); font-weight:700; font-size:11px;
+    letter-spacing:.14em; color:var(--accent); background:var(--accent-soft);
+    padding:3px 8px; border-radius:6px; margin-bottom:10px;
+  }
+  h1{font-family:var(--head); font-size:19px; margin:0 0 6px; letter-spacing:.01em;}
+  p.sub{color:var(--muted); font-size:13px; margin:0 0 22px; line-height:1.7;}
+  .card{
+    background:var(--surface); border:1px solid var(--border); border-radius:18px;
+    box-shadow:var(--shadow); padding:22px;
+  }
+  .card img{width:100%; height:auto; display:block; border-radius:8px;}
+  .url{
+    margin-top:16px; font-family:var(--mono); font-size:11.5px; color:var(--muted);
+    word-break:break-all; line-height:1.6;
+  }
+  .hint{margin-top:22px; font-size:12px; color:var(--muted); line-height:1.8;}
+  .hint b{color:var(--ink);}
+</style>
+
+<div class="wrap">
+  <span class="mark">2種</span>
+  <h1>写真・図記号 暗記帳</h1>
+  <p class="sub">カメラでこのQRコードを読み取ると、サインイン不要でクイズアプリが開きます。</p>
+  <div class="card">
+    <img src="qr-code.png" alt="電工二種 暗記帳への QRコード">
+    <div class="url">https://machan1123.github.io/denko-quiz/</div>
+  </div>
+  <p class="hint">
+    画像を長押し（iPhone）または右クリック（PC）で保存すると、印刷や共有に使えます。<br>
+    <b>ホーム画面に追加</b>すればアプリのように毎回すぐ開けます。
+  </p>
+</div>
